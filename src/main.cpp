@@ -1,4 +1,4 @@
-#include <iostream>
+/*#include <iostream>
 #include <cmath>
 struct Point {
   double x;
@@ -27,7 +27,7 @@ std::ostream& operator<<(std::ostream& os, const Figure& obj)
 std::istream& operator>>(std::istream& is, Figure& obj)
 {
     obj.read(is);
-    //if (/* T could not be constructed */)
+   )
         //is.setstate(std::ios::failbit);
     return is;
 }
@@ -267,4 +267,91 @@ int main() {
     count--;
   return 0;
     
+} */
+
+
+#include <iostream>
+#include <cmath>
+#include "Figure.h"
+#include "Triangle.h"
+#include "Square.h"
+#include "Rectangle.h"
+
+// УБРАТЬ эти определения - они теперь в Figure.cpp
+// std::ostream& operator<<(std::ostream& os, const Figure& obj) {
+//     obj.print(os);
+//     return os;
+// }
+// 
+// std::istream& operator>>(std::istream& is, Figure& obj) {
+//     obj.read(is);
+//     return is;
+// }
+
+int main() {
+    int count = 0;
+    std::cin >> count;
+    std::cout << count << " number of figures" << std::endl;
+    
+    Figure** fig = new Figure*[count];
+    
+    for (int i = 0; i < count; ++i) {
+        char temp;
+        std::cin >> temp;
+        Figure *ptr;
+        
+        switch (temp) {
+            case '1':
+                ptr = new Triangle();
+                std::cout << "You have chosen the triangle" << std::endl;
+                break;
+            case '2':
+                ptr = new Square();
+                std::cout << "You have chosen the square" << std::endl;
+                break;
+            case '3':
+                ptr = new Rectangle();
+                std::cout << "You have chosen the rectangle" << std::endl;
+                break;
+            default:
+                std::cout << "Unknown figure" << std::endl;
+                exit(1);
+        }
+        
+        std::cin >> *ptr;
+        fig[i] = ptr;
+    }
+    
+    double total_S = 0;
+    for (int i = 0; i < count; ++i) {
+        Point temp = fig[i]->center();
+        std::cout << "Center: " << temp.x << " " << temp.y << std::endl; 
+        double S = static_cast<double>(*fig[i]);
+        std::cout << "Area: " << S << std::endl;
+        total_S += S;
+    }
+    
+    std::cout << "Total area: " << total_S << std::endl;
+    
+    std::cout << "Enter index to delete: ";
+    int index = 0;
+    std::cin >> index;
+    
+    if (index >= 0 && index < count) {
+        delete fig[index];
+        fig[index] = fig[count - 1];
+        count--;
+        
+        std::cout << "Remaining figures:" << std::endl;
+        for (int i = 0; i < count; ++i) {
+            std::cout << *fig[i] << std::endl;
+        }
+    }
+    
+    for (int i = 0; i < count; ++i) {
+        delete fig[i];
+    }
+    delete[] fig;
+    
+    return 0;
 }
